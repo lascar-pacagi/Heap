@@ -49,8 +49,8 @@ Cette classe va vous permettre d'avoir un exemple pour deux points particuliers 
 ```java
 public class OrderedArrayPQ<T> implements PriorityQueue<T> {
     private static final int DEFAULT_INITIAL_CAPACITY = 8;
-    private Comparator<? super T> comparator;
-(3) private int size;
+(3) private Comparator<? super T> comparator;
+    private int size;
     private T[] array;
 
     public OrderedArrayPQ() {
@@ -459,11 +459,11 @@ L'indice 0 contient la taille de la pile, ici 5. Les autres indices représenten
 dans `stack` mais leurs indices dans le tableau `plaques`. Cette façon de faire permet de compresser et d'être indépendant de la taille des nombres dans `plaques`^[Vous pouvez aussi comprendre
 maintenant pourquoi la constante `ADD` est égale à 6.].
 
-    * La méthode `int get(long stack, int index)` à la ligne 104 retourne l'élément d'indice `i` dans `stack`. Pour notre exemple, `get(stack, 3) == 1`.
+* La méthode `int get(long stack, int index)` à la ligne 104 retourne l'élément d'indice `i` dans `stack`. Pour notre exemple, `get(stack, 3) == 1`.
 
-    * La méthode `int size(long stack)` à la ligne 112 rend la taille de la pile en paramètre. Pour notre exemple, `size(stack) == 5`.
+* La méthode `int size(long stack)` à la ligne 112 rend la taille de la pile en paramètre. Pour notre exemple, `size(stack) == 5`.
 
-    * La méthode `long push(long stack, int v)` à la ligne 115 prend une pile en paramètre et en crée une nouvelle en ajoutant `v` en haut de la pile. Vous verrez normalement
+* La méthode `long push(long stack, int v)` à la ligne 115 prend une pile en paramètre et en crée une nouvelle en ajoutant `v` en haut de la pile. Vous verrez normalement
   l'utilité de cette méthode dans `neighbors`. Pour notre exemple, pour `push(stack, 2)`, on obtiendrait la nouvelle pile
 ```
                  +-------+
