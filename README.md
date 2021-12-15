@@ -1,21 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="github-markdown.css">
-<style>
-
-	.markdown-body {
-		box-sizing: border-box;
-		min-width: 200px;
-		max-width: 1080px;
-		margin: 0 auto;
-		padding: 45px;
-	}
-
-	@media (max-width: 767px) {
-		.markdown-body {
-			padding: 15px;
-		}
-	}
-</style>
 <article class="markdown-body">
 
 The solution to the heap lab at INSA Rennes. To run the seam carving user interface:
@@ -34,8 +18,6 @@ de [Seam Carving](https://www.aryan.app/seam-carving/).
 
 ## Préparation
 
-<!-- Dans un premier temps récupérer l'archive du projet `Eclipse` [files.zip](), puis importer ce fichier dans l'IDE `Eclipse` (`File > Import > Existing Projects into Workspace`). -->
-Vous allez récupérer les sources du projet via [git](https://git-scm.com/) et vous trouverez [ici](https://moodleng.insa-rennes.fr/pluginfile.php/23035/mod_resource/content/1/howto.pdf) une documentation vous expliquant les différentes étapes à suivre.
 Le projet est réalisé avec [Maven](https://en.wikipedia.org/wiki/Apache_Maven), qui va nous permettre de gérer facilement toutes les dépendances du projet,
 le lancement des tests et l'exécution.
 
@@ -47,11 +29,11 @@ le package `fr.insa_rennes.sdd.priority_queue`.
 
 ```java
 public interface PriorityQueue<T> {
-	boolean isEmpty();
-	int size();
-	void add(T e);
-	T peek();
-	T poll();
+  boolean isEmpty();
+  int size();
+  void add(T e);
+  T peek();
+  T poll();
 }
 ```
 
@@ -64,43 +46,43 @@ public interface PriorityQueue<T> {
 On vous fourni une implémentation peu efficace de cette interface dans la classe `OrderedArrayPQ<T>` du package `fr.insa_rennes.sdd.priority_queue`.
 Cette classe va vous permettre d'avoir un exemple pour deux points particuliers de l'implémentation.
 
-```{.java .numberLines}
+````java
 public class OrderedArrayPQ<T> implements PriorityQueue<T> {
-	private static final int DEFAULT_INITIAL_CAPACITY = 8;
-	private Comparator<? super T> comparator;
-	private int size;
-	private T[] array;
+    private static final int DEFAULT_INITIAL_CAPACITY = 8;
+    private Comparator<? super T> comparator;
+    private int size;
+    private T[] array;
 
     public OrderedArrayPQ() {
-		this(DEFAULT_INITIAL_CAPACITY, null);
-	}
-	@SuppressWarnings("unchecked")
-	public OrderedArrayPQ(int initialCapacity, Comparator<? super T> comparator) {
-		if (initialCapacity < 1) {
-			throw new IllegalArgumentException();
+        this(DEFAULT_INITIAL_CAPACITY, null);
+    }
+    @SuppressWarnings("unchecked")
+    public OrderedArrayPQ(int initialCapacity, Comparator<? super T> comparator) {
+        if (initialCapacity < 1) {
+            throw new IllegalArgumentException();
 		}
 		array = (T[])new Object[initialCapacity];
 		this.comparator =
-          comparator == null ? (t1, t2) -> ((Comparable<? super T>)t1).compareTo(t2) : comparator;
+            comparator == null ? (t1, t2) -> ((Comparable<? super T>)t1).compareTo(t2) : comparator;
 	}
     @Override
 	public void add(T e) {
-		if (e == null) {
-			throw new NullPointerException();
-		}
-		if (size >= array.length) {
-			grow();
-		}
-		int index = Arrays.binarySearch(array, 0, size, e, comparator);
-		if (index >= 0) {
-			insert(e, index);
-		} else {
-			insert(e, -(index + 1));
-		}
-		size++;
-	}
+        if (e == null) {
+            throw new NullPointerException();
+        }
+        if (size >= array.length) {
+            grow();
+        }
+        int index = Arrays.binarySearch(array, 0, size, e, comparator);
+        if (index >= 0) {
+            insert(e, index);
+        } else {
+            insert(e, -(index + 1));
+        }
+        size++;
+    }
 }
-```
+````
 
 À la ligne 3 on peut voir le comparateur qui va permettre d'ordonner les éléments de la file. L'utilisateur peut le fournir
 au constructeur à la ligne 11, mais s'il ne le fournit pas, on utilise le comparateur du type `T` à la ligne 17^[C'est réalisé ainsi dans la classe `PriorityQueue` de Java.].
@@ -142,13 +124,13 @@ utiliser une librairie comme [JMH](https://openjdk.java.net/projects/code-tools/
 L'algorithme de [Dijkstra](https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra) va nous permettre de rechercher le plus court chemin d'un sommet d'un graphe vers tous les autres. Pour l'utiliser, nous avons tout
 d'abord besoin de représenter un graphe. L'interface `Graph<T>` du package `fr.insa_rennes.sdd.graph` va nous permettre de décrire un graphe dont les sommets sont de type `T`.
 
-```{.java}
+```java
 public interface Graph<T> {
-	int numberOfVertices();
-	int numberOfEdges();
-	void addVertex(T v);
-	void addEdge(T u, T v, double weight);
-	Iterable<VertexAndWeight<T>> neighbors(T u);
+    int numberOfVertices();
+    int numberOfEdges();
+    void addVertex(T v);
+    void addEdge(T u, T v, double weight);
+    Iterable<VertexAndWeight<T>> neighbors(T u);
 }
 ```
 
@@ -161,15 +143,15 @@ voisin donné.
 
 La classe `VertexAndWeight` permet de représenter un couple `(sommet, poids)`.
 
-```{.java}
+```java
 public class VertexAndWeight<T> {
-	public final T vertex;
-	public final double weight;
+    public final T vertex;
+    public final double weight;
 
-	public VertexAndWeight(T vertex, double weight) {
-		this.vertex = vertex;
-		this.weight = weight;
-	}
+    public VertexAndWeight(T vertex, double weight) {
+        this.vertex = vertex;
+        this.weight = weight;
+    }
 }
 ```
 
@@ -180,53 +162,53 @@ on pourrait représenter le graphe suivant,
 
 en faisant,
 
-```{.java}
+```java
 public static void main(String[] args) {
-  Graph<Integer> g = new IndexedGraph(5);
-  g.addEdge(0, 1, 3);
-  g.addEdge(0, 3, 10);
-  g.addEdge(1, 2, 4);
-  g.addEdge(1, 3, 1);
-  g.addEdge(3, 4, 3);
-  g.addEdge(4, 3, 2);
+    Graph<Integer> g = new IndexedGraph(5);
+    g.addEdge(0, 1, 3);
+    g.addEdge(0, 3, 10);
+    g.addEdge(1, 2, 4);
+    g.addEdge(1, 3, 1);
+    g.addEdge(3, 4, 3);
+    g.addEdge(4, 3, 2);
 }
 ```
 
 Vous allez maintenant implémenter l'algorithme de [Dijkstra](https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra). La classe `Dijkstra<T>` du package `fr.insa_rennes.sdd.dijkstra`
 est une ébauche que vous allez devoir compléter.
 
-```{.java .numberLines}
+````java
 public class Dijkstra<T> {
-	private final PriorityQueue<DijkstraNode<T>> pq;
-	private final Map<T, Double> cost = new HashMap<>();
-	private final Map<T, T> prev = new HashMap<>();
+    private final PriorityQueue<DijkstraNode<T>> pq;
+    private final Map<T, Double> cost = new HashMap<>();
+    private final Map<T, T> prev = new HashMap<>();
 
-	public Dijkstra(Graph<T> graph, T source) {
-		this(graph, source, FactoryPQ.newInstance("HeapPQ"));
-	}
+    public Dijkstra(Graph<T> graph, T source) {
+        this(graph, source, FactoryPQ.newInstance("HeapPQ"));
+    }
 
-	public Dijkstra(Graph<T> graph, T source, PriorityQueue<DijkstraNode<T>> pq) {
-		this.pq = pq;
-		solve(graph, source);
-	}
+    public Dijkstra(Graph<T> graph, T source, PriorityQueue<DijkstraNode<T>> pq) {
+        this.pq = pq;
+        solve(graph, source);
+    }
 
-	private void solve(Graph<T> graph, T source) {
+    private void solve(Graph<T> graph, T source) {
       // TO DO
     }
 
-	public Deque<T> getPathTo(T v) {
+    public Deque<T> getPathTo(T v) {
       // TO DO
     }
 
-	public double getCost(T v) {
-		return cost.getOrDefault(v, Double.POSITIVE_INFINITY);
-	}
+    public double getCost(T v) {
+        return cost.getOrDefault(v, Double.POSITIVE_INFINITY);
+    }
 
-	public boolean hasPathTo(T v) {
-		return getCost(v) != Double.POSITIVE_INFINITY;
-	}
+    public boolean hasPathTo(T v) {
+        return getCost(v) != Double.POSITIVE_INFINITY;
+    }
 }
-```
+````
 
 * `void solve(Graph<T> graph, T source)` lance toute la recherche à partir du sommet `source` du graphe `graph`. Cette méthode utilisera
 l'attribut `pq` comme file de priorité. Elle remplira les attributs `cost` et `prev` durant cette recherche.
@@ -240,7 +222,7 @@ le prédécesseur du prédécesseur et ainsi de suite, jusqu'à retomber sur le 
 La classe `DijkstraNode<T>` permet de représenter un sommet avec sa distance depuis la source et son prédécesseur pendant la recherche dans `solve`. La file de priorité `pq` contient
 des `DijkstraNode`.
 
-```{.java .numberLines}
+````java
 public class DijkstraNode<T> implements Comparable<DijkstraNode<T>> {
 	final Double cost;
 	final T vertex;
@@ -261,7 +243,7 @@ public class DijkstraNode<T> implements Comparable<DijkstraNode<T>> {
 		return Double.compare(cost, node.cost);
 	}
 }
-```
+````
 
 `int compareTo(DijkstraNode<T> node)` permet de comparer deux noeuds suivant leur distance à la source. Ainsi, l'élément à la racine du tas de la file de priorité `pq` sera celui
 ayant la distance la plus petite à la source.
@@ -299,7 +281,7 @@ reste à créer le graphe qui va représenter l'espace de recherche du compte es
 
 La classe le `LeCompteEstBonGraph` se trouve dans le package `fr.insa_rennes.sdd.graph`.
 
-```{.java .numberLines}
+````java
 public class LeCompteEstBonGraph implements Graph<LeCompteEstBonGraph.State> {
 	private int[] plaques;
 	private double[] operatorsCost = {1, 1, 2, 6};
@@ -422,222 +404,7 @@ public class LeCompteEstBonGraph implements Graph<LeCompteEstBonGraph.State> {
 		}
 	}
 }
-```
-
-* L'attribut `plaques` à la ligne 2, représente les plaques du jeu. Elles sont au nombre de 6. On pourrait avoir par exemple `plaques = new int[]{1, 2, 7, 9, 25, 100}` pour
-représenter les plaques `1`, `2`, `7`, `9`, `25`, `100`.
-
-* L'attribut `operatorsCost` à la ligne 3, représente le coût associé aux différents opérateurs `+`, `-`, `*` et `/` respectivement. Quand on
-passera d'un état du jeu à un autre, on attribuera un coût de 1 pour une plaque, et le coût de `operatorCost` pour un opérateur. Pour obtenir le coût d'une opération,
-on utilisera la méthode `getOperatorCost` définie à la ligne 20. Par exemple, pour obtenir le coût de l'addition, on fera `getOperatorCost(ADD)`.
-Pouvoir avoir un coût différent par opération nous permettra de préférer, par exemple, des solutions où il n'y a pas de divisions.
-
-* Les attributs `ADD`, `MINUS`, `TIMES` et `DIV` aux lignes 4, 5, 6 et 7, sont des constantes permettant de représenter les opérateurs.
-
-* L'attribut `adjacency` à la ligne 8, est la représentation du graphe sous forme de [listes d'adjacence](https://fr.wikipedia.org/wiki/Liste_d%27adjacence).
-
-* L'attribut `compteToState` à la ligne 9, permet de faire le lien entre le résultat d'un calcul et l'état associé (on va définir ce qu'est un état juste après).
-
-* On peut voir à la ligne 1 que le `CompteEstBonGraph` est un `Graph<LeCompteEstBonGraph.State>`. Les sommets de ce graphe sont des états qui vont permettre de représenter
-les différents calculs, intermédiaires ou complets, que l'on peut réaliser avec les différentes plaques et opérateurs.
-
-* La classe `State` est une classe interne de la classe `LeCompteEstBon` et sa définition est donnée à partir de la ligne 71. C'est cette classe que vous allez devoir compléter.
-Cette classe va représenter les calculs en utilisant la [notation polonaise inverse](http://www-stone.ch.cam.ac.uk/documentation/rrf/rpn.html) qui nous permet de nous passer des parenthèses.
-La classe `State` va donc conserver le calcul que l'état représente dans une pile contenant des plaques et des opérateurs. Par exemple, `10 5 - 2 +` représente `(10 - 5) + 2`.
-
-* L'attribut `UNFINISHED` à la ligne 72, permet de représenter un état de calcul qui ne permet pas encore d'obtenir un résultat, par exemple l'état `1 2 3 +` ne permet pas encore d'obtenir un résultat.
-Il faudrait un autre opérateur pour avoir un calcul complet, comme `1 2 3 + *` par exemple.
-
-* L'attribut `IMPOSSIBLE` à la ligne 73, permet de représenter un état de calcul qui est impossible. En effet, lorsque vous allez générer les états voisins d'un état donné grâce à la méthode
-`neighbors` définie à la ligne 84, vous allez essayer d'ajouter une plaque ou un opérateur à l'état courant et vérifier si le calcul est possible ou non. Par exemple, si on ajoute à l'état
-`1 2 +` un opérateur `+`, on obtient l'état voisin `1 2 + +` qui représente un calcul impossible à faire ou à compléter.
-
-* L'attribut `stack` à la ligne 74, représente la pile du calcul que représente cet état. On a choisi de représenter la pile par un `long` pour des raisons d'efficacité, car la pile ne sera
-pas très grande (6 plaques et 5 opérateurs au maximum). Même si cette représentation peut vous paraître compliquée, vous pouvez la manipuler sans avoir à la comprendre dans les détails
-grâce aux méthodes `get`, `size` et `push` définies ci-dessous. Nous allons donner un exemple de pile pour expliquer ces différentes méthodes. Soit le tableau
-`plaques = new int[]{1, 3, 7, 10, 25, 100}`, pour le calcul `10 25 3 + *` la pile
-`stack` sera représentée comme suit.
-```
-                 +-------+
-               5 | TIMES |
-                 +-------+
-               4 |  ADD  |
-                 +-------+
-               3 |   1   |
-                 +-------+
-               2 |   4   |
-                 +-------+
-               1 |   3   |
-                 +-------+
-               0 |   5   |
-                 +-------+
-```
-L'indice 0 contient la taille de la pile, ici 5. Les autres indices représentent les différents éléments du calcul. Notons que nous ne plaçons pas directement les nombres `10`, `25` et `3`
-dans `stack` mais leurs indices dans le tableau `plaques`. Cette façon de faire permet de compresser et d'être indépendant de la taille des nombres dans `plaques`^[Vous pouvez aussi comprendre
-maintenant pourquoi la constante `ADD` est égale à 6.].
-
-    * La méthode `int get(long stack, int index)` à la ligne 104 retourne l'élément d'indice `i` dans `stack`. Pour notre exemple, `get(stack, 3) == 1`.
-
-    * La méthode `int size(long stack)` à la ligne 112 rend la taille de la pile en paramètre. Pour notre exemple, `size(stack) == 5`.
-
-    * La méthode `long push(long stack, int v)` à la ligne 115 prend une pile en paramètre et en crée une nouvelle en ajoutant `v` en haut de la pile. Vous verrez normalement
-  l'utilité de cette méthode dans `neighbors`. Pour notre exemple, pour `push(stack, 2)`, on obtiendrait la nouvelle pile
-```
-                 +-------+
-               6 |   2   |
-                 +-------+
-               5 | TIMES |
-                 +-------+
-               4 |  ADD  |
-                 +-------+
-               3 |   1   |
-                 +-------+
-               2 |   4   |
-                 +-------+
-               1 |   3   |
-                 +-------+
-               0 |   6   |
-                 +-------+
-```
-
-Vous pouvez maintenant compléter la méthode `int compte(stack)` à la ligne 100. Cette méthode prend une pile de calcul en paramètre et rend le résultat que représente ce calcul. Si
-la pile ne représente pas un calcul valide, cette méthode rend la valeur `IMPOSSIBLE`. Si le calcul n'est pas encore terminé, par exemple `1 2 + 3`, cette méthode retourne `UNFINISHED`.
-Pour réaliser cette méthode vous pouvez utiliser, si vous voulez, la structure de donnée `ArrayDeque` de Java. Vous pouvez ensuite tester la méthode `compte` en exécutant
-le test `testCompte` de la classe de tests `LeCompteEstBonGraphTest` sous `Eclipse` ou en utilisant la commande suivante.
-
-```
-mvn -Dtest=LeCompteEstBonGraphTest#testCompte test
-```
-
-Il ne reste plus qu'à compléter la méthode `HashSet<VertexAndWeight<State>> neighbors()` à la ligne 95 et notre compte est bon sera opérationnel. La méthode `neighbors` va générer tous
-les états possibles successeurs de l'état courant. Par exemple, si `plaques = new int[]{1, 3, 7, 10, 25, 100}` et que l'état courant est le suivant,
-
-```
-          stack:
-                 +-------+
-               4 |  ADD  |
-                 +-------+
-               3 |   1   |
-                 +-------+
-               2 |   4   |
-                 +-------+
-               1 |   3   |
-                 +-------+
-               0 |   4   |
-                 +-------+
-          compte: UNFINISHED
-```
-
-la méthode `neighbors` rendra les états suivants.
-
-
-```
-stack:                stack:                stack:                stack:                stack:
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     5 |  ADD  |           5 | TIMES |           5 |   0   |           5 |   2   |           5 |   5   |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     4 |  ADD  |           4 |  ADD  |           4 |  ADD  |           4 |  ADD  |           4 |  ADD  |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     3 |   1   |           3 |   1   |           3 |   1   |           3 |   1   |           3 |   1   |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     2 |   4   |           2 |   4   |           2 |   4   |           2 |   4   |           2 |   4   |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     1 |   3   |           1 |   3   |           1 |   3   |           1 |   3   |           1 |   3   |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-     0 |   5   |           0 |   5   |           0 |   5   |           0 |   5   |           0 |   5   |
-       +-------+             +-------+             +-------+             +-------+             +-------+
-compte: 38            compte: 280           compte: UNFINISHED    compte: UNFINISHED    compte: UNFINISHED
-```
-
-Notons que dans le jeu du compte est bon, on ne peut utiliser qu'une seule fois une plaque donnée, le résultat d'un calcul doit être positif
-et une division doit être entière. Vous pouvez maintenant tester la méthode `neighbors` en lançant le test `testNeighbors` de la classe de tests `LeCompteEstBonGraphTest`
-en utilisant `Eclipse` ou la commande suivante.
-
-```
-mvn -Dtest=LeCompteEstBonGraphTest#testNeighbors test
-```
-
-Pour lancer l'application dans un terminal, taper les commandes suivantes.
-
-```bash
-mvn package
-mvn exec:java -Dexec.mainClass="fr.insa_rennes.sdd.dijkstra.LeCompteEstBonSolver"
-```
-
-## Recadrage intelligent
-
-Le [recadrage intelligent](https://en.wikipedia.org/wiki/Seam_carving) (*seam carving* en anglais) est une technique de redimensionnement d'images qui utilise le contenu
-de l'image pour supprimer des pixels qui semblent moins importants. Une démonstration se trouve [ici](https://www.aryan.app/seam-carving/) et l'article
-des auteurs de cette technique [ici](http://www.faculty.idc.ac.il/arik/SCWeb/imret/imret.pdf).
-
-### Principe
-
-L'idée du recadrage intelligent est d'utiliser une recherche de plus court chemin suivant un critère particulier pour trouver les pixels à supprimer dans l'image.
-Considérons l'image 4x3 suivante.
-
-<img src="seam1.svg" width="550"/>
-
-On peut voir dans chaque pixel de l'image les trois composantes `RGB` (rouges, vertes et bleues). Le `0` représente l'intensité minimale pour la composante
-considérée et une valeur de `1` représente l'intensité maximale.
-
-À partir de cette image, on va calculer l'énergie d'un pixel qui va nous donner l'importance de ce pixel. Plus l'énergie est élevée et plus le pixel sera
-important. Par exemple, on peut attribuer une valeur élevée à un pixel s'il y a beaucoup de différence d'intensité entre lui et ses voisins
-sur chaque composante `RGB`. On pourrait obtenir, pour l'image précédente, la grille d'énergie suivante.
-
-<img src="seam2.svg" width="550"/>
-
-On peut voir que le pixel `(3, 0)` possède une forte énergie car il était entouré de pixels avec des intensités éloignées.
-
-Le code qui s'occupe de calculer cette grille d'énergie se trouve dans la classe `SeamCarver` du package `fr.insa_rennes.sdd.seam_carving`.
-
-```{.java .numberLines}
-public abstract class SeamCarver {
-	protected Picture picture;
-	protected BiFunction<Double, Double, Double> energyFunction;
-
-	protected SeamCarver(Picture picture) {
-		this(picture, (v1, v2) -> (v1 - v2) * (v1 - v2));
-	}
-
-	protected SeamCarver(Picture picture, BiFunction<Double, Double, Double> energyFunction) {
-		this.picture = picture;
-		this.energyFunction = energyFunction;
-	}
-
-    protected double[][] energyMap() {
-		double[][] redEnergy = energy(picture.redPlane());
-		double[][] greenEnergy = energy(picture.greenPlane());
-		double[][] blueEnergy = energy(picture.bluePlane());
-		double[][] res = blueEnergy;
-		for (int row = 0; row < res.length; row++) {
-			for (int col = 0; col < res[0].length; col++) {
-				res[row][col] += redEnergy[row][col] + greenEnergy[row][col];
-			}
-		}
-		return res;
-	}
-
-	protected double[][] energy(double[][] channel) {
-		int h = channel.length;
-		int w = channel[0].length;
-		double[][] res = new double[h][w];
-		for (int row = 0; row < h; row++) {
-			for (int col = 0; col < w; col++) {
-				double v = channel[row][col];
-				double delta = row == 0 ? 0 : energyFunction.apply(v, channel[row - 1][col]);
-				res[row][col] += delta;
-				delta = row == h - 1 ? 0 : energyFunction.apply(v, channel[row + 1][col]);
-				res[row][col] += delta;
-				delta = col == 0 ? 0 : energyFunction.apply(v, channel[row][col - 1]);
-				res[row][col] += delta;
-				delta = col == w - 1 ? 0 : energyFunction.apply(v, channel[row][col + 1]);
-				res[row][col] += delta;
-			}
-		}
-		return res;
-	}
-}
-```
+````
 
 La méthode `double[][] energyMap()` à la ligne 14 rend une matrice de `double` représentant l'énergie de chaque pixel de l'image `picture` en utilisant la fonction `energyFunction` dont la valeur par défaut est définie
 à la ligne 6.
@@ -690,28 +457,28 @@ Le sommet `Top` est représenté par la classe `Coordinate.Top` et le sommet `Bo
 Vous allez maintenant implémenter le recadrage intelligent en utilisant les graphes `LeftToRightGridGraph` et `TopToBottomGridGraph` et l'algorithme de `Dijkstra`. La classe que vous devez compléter
 est la classe `SeamCarverDijkstra` du package `fr.insa_rennes.sdd.seam_carving`.
 
-```{.java .numberLines}
+````java
 public class SeamCarverDijkstra extends SeamCarver {
-	public SeamCarverDijkstra(Picture picture) {
-		super(picture);
-	}
-	public SeamCarverDijkstra(Picture picture, BiFunction<Double, Double, Double> energyFunction) {
-		super(picture, energyFunction);
-	}
-	@Override
-	public void reduceToSize(int width, int height) {
-		throw new UnsupportedOperationException();
-	}
-	@Override
-	public Deque<Coordinate> horizontalSeam() {
-		throw new UnsupportedOperationException();
-	}
-	@Override
-	public Deque<Coordinate> verticalSeam() {
-		throw new UnsupportedOperationException();
-	}
+    public SeamCarverDijkstra(Picture picture) {
+        super(picture);
+    }
+    public SeamCarverDijkstra(Picture picture, BiFunction<Double, Double, Double> energyFunction) {
+        super(picture, energyFunction);
+    }
+    @Override
+    public void reduceToSize(int width, int height) {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public Deque<Coordinate> horizontalSeam() {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public Deque<Coordinate> verticalSeam() {
+        throw new UnsupportedOperationException();
+    }
 }
-```
+````
 
 Vous devez compléter les méthodes suivantes.
 
@@ -767,49 +534,48 @@ comme présentée précédemment est en `O(g.numberOfVertices() + g.numberOfEdge
 
 Vous devez compléter la classe `SeamCarverDP` du package `fr.insa_rennes.sdd.seam_carving`.
 
-```{.java .numberLines}
+````java
 public class SeamCarverDP extends SeamCarver {
-	public SeamCarverDP(Picture picture) {
-		super(picture);
-	}
-	public SeamCarverDP(Picture picture, BiFunction<Double, Double, Double> energyFunction) {
-		super(picture, energyFunction);
-	}
-	@Override
-	public void reduceToSize(int width, int height) {
-		throw new UnsupportedOperationException();
-	}
-	@Override
-	public Deque<Coordinate> horizontalSeam() {
-		throw new UnsupportedOperationException();
-	}
-	@Override
-	public Deque<Coordinate> verticalSeam() {
-		throw new UnsupportedOperationException();
-	}
+    public SeamCarverDP(Picture picture) {
+        super(picture);
+    }
+    public SeamCarverDP(Picture picture, BiFunction<Double, Double, Double> energyFunction) {
+        super(picture, energyFunction);
+    }
+    @Override
+    public void reduceToSize(int width, int height) {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public Deque<Coordinate> horizontalSeam() {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public Deque<Coordinate> verticalSeam() {
+        throw new UnsupportedOperationException();
+    }
 }
-```
+````
 
 Pour tester, vous devez modifier dans la classe `Controller` du package `fr.insa_rennes.sdd.javafx.controller` la méthode `loadImage` pour utiliser le `SeamCarverDP` à la place du `SeamCarverDijkstra`.
 
-```{.java .numberLines}
+````java
 @FXML
 private void loadImage() {
-  FileChooser fileChooser = new FileChooser();
-  fileChooser.setTitle("Open Image File");
-  File file = fileChooser.showOpenDialog(pane.getScene().getWindow());
-  seamCarver = Optional.ofNullable(file)
-    .map(f -> new SeamCarverDijkstra(new Picture(new Image(f.toURI().toString(), MAX_SIZE, MAX_SIZE, true, true))));
-  if (seamCarver.isPresent()) {
-    Image image = seamCarver.get().picture().image();
-	zoomRatio = Math.min(canvas.getWidth() / image.getWidth(), canvas.getHeight() / image.getHeight());
-  }
-  draw();
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open Image File");
+    File file = fileChooser.showOpenDialog(pane.getScene().getWindow());
+    seamCarver = Optional.ofNullable(file)
+        .map(f -> new SeamCarverDijkstra(new Picture(new Image(f.toURI().toString(), MAX_SIZE, MAX_SIZE, true, true))));
+    if (seamCarver.isPresent()) {
+        Image image = seamCarver.get().picture().image();
+        zoomRatio = Math.min(canvas.getWidth() / image.getWidth(), canvas.getHeight() / image.getHeight());
+    }
+    draw();
 }
-```
+````
 Dans la ligne 7 il faut remplacer l'utilisation de `SeamCarverDijkstra` par `SeamCarverDP`.
 
 Vous pouvez ensuite lancer l'application et vous devriez remarquer une meilleure réactivité maintenant (essayer de réduire la taille de la fenêtre par exemple).
-
 
 </article>
