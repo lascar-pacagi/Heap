@@ -11,12 +11,12 @@ import java.util.function.Supplier;
 import com.pholser.junit.quickcheck.Property;
 
 public class PriorityQueueQuickCheckTestCommon {
-	Supplier<PriorityQueue<Integer>> factory;	
-	
+	Supplier<PriorityQueue<Integer>> factory;
+
 	PriorityQueueQuickCheckTestCommon(Supplier<PriorityQueue<Integer>> factory) {
 		this.factory = factory;
 	}
-	
+
 	public void sameSize(List<Integer> elements) {
         PriorityQueue<Integer> pq = factory.get();
     	for (Integer i : elements) {
@@ -35,8 +35,7 @@ public class PriorityQueueQuickCheckTestCommon {
     	}
     	assertEquals(nbPolls >= elements.size() ? true : false, pq.isEmpty());
     }
-	
-	@Property(trials = 500) 
+
     public void arrayIsSorted(List<Integer> elements) {
 		PriorityQueue<Integer> pq = factory.get();
     	for (Integer i : elements) {
@@ -50,8 +49,7 @@ public class PriorityQueueQuickCheckTestCommon {
     	elements.sort(Integer::compare);
     	assertTrue(Arrays.equals(elements.toArray(), array));
     }
-	
-	@Property(trials = 500) 
+
     public void peekIsMinAndSizeUnchanged(List<Integer> elements) {
 		PriorityQueue<Integer> pq = factory.get();
     	int min = Integer.MAX_VALUE;
@@ -63,9 +61,8 @@ public class PriorityQueueQuickCheckTestCommon {
         	assertEquals(min, pq.peek());
         	assertEquals(n, pq.size());
         }
-    }		
-	
-	@Property(trials = 500) 
+    }
+
     public void pollIsMinAndDecrementSize(List<Integer> elements) {
         OrderedArrayPQ<Integer> pq = new OrderedArrayPQ<>();
         for (Integer i : elements) {
